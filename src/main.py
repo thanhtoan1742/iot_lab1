@@ -31,6 +31,16 @@ def connected(client, usedata, flags, rc):
     else:
         print("Connection is failed")
 
+
+def get_geolocation():
+    import requests
+    url = 'https://ipinfo.io/loc'
+    res = requests.get(url=url)
+    if res.status_code == 200:
+        return list(map(float, res.text.split(',')))
+    return [10.878064, 106.806755]
+
+
 def main():
     client = mqttclient.Client("Gateway_Thingsboard")
 
@@ -43,10 +53,10 @@ def main():
     client.loop_start()
 
     temperature = 25
-    humidity = 30
-    light_intensity = 100
-    longitude = 106.706819
-    latitude = 11.678461
+    humidity = 25
+    light_intensity = 300
+    latitude, longitude = get_geolocation()
+
     while 1:
         data = {
             'temperature': temperature,
@@ -60,9 +70,10 @@ def main():
         temperature += randint(-1, 1)
         humidity += randint(-1, 1)
         light_intensity += randint(-1, 1)
-        time.sleep(3)
+        time.sleep(10)
 
 
 if __name__ == '__main__':
     main()
+
 
